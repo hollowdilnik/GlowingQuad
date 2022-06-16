@@ -18,7 +18,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual bool ShouldTickIfViewportsOnly() const override { return bTickInViewports; };
 	virtual void PostInitProperties() override;
+	
+#if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLinearColor GlowColor{0.0f, 1.0f, 1.0f, 1.0f};

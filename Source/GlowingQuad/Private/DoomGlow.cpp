@@ -148,12 +148,14 @@ void ADoomGlow::PostInitProperties()
 	Init();
 }
 
+#if WITH_EDITOR
 void ADoomGlow::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
 	Init();
 }
+#endif
 
 bool ADoomGlow::GetCameraLocation(FVector& OutCameraLocation)
 {
