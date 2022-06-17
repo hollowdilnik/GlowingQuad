@@ -40,6 +40,7 @@ void ADoomGlow::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Everything is in local space unless said otherwise
 	FVector CameraPosition;
 	if (!GetCameraLocation(CameraPosition))
 	{
@@ -73,13 +74,14 @@ void ADoomGlow::Tick(float DeltaTime)
 		Sign = -Sign;
 	}
 
-	FVector EyeToPoint[4];
+	FVector EyeToPointWS[4]; // in world space
 	for (int i = 0; i < 4; ++i)
 	{
-		EyeToPoint[i] = VertexBuffer[i] - CameraPosition;
-		EyeToPoint[i].Normalize();
+		EyeToPointWS[i] = ProceduralMeshComp->GetComponentTransform().TransformVector(VertexBuffer[i] - CameraPosition);
+		EyeToPointWS[i].Normalize();
 	}
 
+	// TODO: Don't draw the glow if the PushDistance ends up being zero?
 	float PushDistance = GlowSize;
 	if (DistanceFadeCurve)
 	{
@@ -89,14 +91,23 @@ void ADoomGlow::Tick(float DeltaTime)
 	// Extrude quad vertices
 	for (int i = 0; i < 4; ++i)
 	{
-		FVector PushDir[3];
-		PushDir[0] = Sign * (EyeToPoint[i] ^ EyeToPoint[(i+3)%4]).GetSafeNormal();
-		PushDir[1] = Sign * (EyeToPoint[(i+1)%4] ^ EyeToPoint[i]).GetSafeNormal();
-		PushDir[2] = (PushDir[0] + PushDir[1]).GetSafeNormal();
+		FVector PushDirWS[3]; // in world space
+		PushDirWS[0] = Sign * (EyeToPointWS[i] ^ EyeToPointWS[(i+3)%4]).GetSafeNormal();
+		PushDirWS[1] = Sign * (EyeToPointWS[(i+1)%4] ^ EyeToPointWS[i]).GetSafeNormal();
+		PushDirWS[2] = (PushDirWS[0] + PushDirWS[1]).GetSafeNormal();
 
 		for (int j = 0; j < 3; ++j)
 		{
-			VertexBuffer[4+j+3*i] = VertexBuffer[i] + PushDistance * PushDir[j];
+			FVector Offset = PushDistance * PushDirWS[j];
+			if (bGlowSizeIgnoresScale)
+			{
+				Offset = ProceduralMeshComp->GetComponentTransform().InverseTransformVector(Offset);
+			}
+			else
+			{
+				Offset = ProceduralMeshComp->GetComponentTransform().InverseTransformVectorNoScale(Offset);
+			}
+			VertexBuffer[4+j+3*i] = VertexBuffer[i] + Offset;
 		}
 	}
 

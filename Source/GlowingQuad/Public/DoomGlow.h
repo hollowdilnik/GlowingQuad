@@ -46,6 +46,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float GlowSize{30.0f};
 
+	// Should the glow size ignore actor's scale and always be in world space units?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bGlowSizeIgnoresScale{false};
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector2D QuadSize{100.0f, 100.0f};
 
