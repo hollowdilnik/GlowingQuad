@@ -19,6 +19,19 @@ public:
 	virtual bool ShouldTickIfViewportsOnly() const override { return bTickInViewports; };
 	virtual void OnConstruction(const FTransform& Transform) override;
 
+	// Updates the quad size and points
+	UFUNCTION(BlueprintCallable)
+	void SetQuadSize(FVector2D NewSize);
+
+	// Manually set the quad points. Expects 4 points. The index buffer for the quad is {0,1,2, 0,2,3}.
+	UFUNCTION(BlueprintCallable)
+	void SetQuadPoints(const TArray<FVector>& NewQuadPoints);
+
+	// Updates the materials for the procedural mesh component
+	// This regenerates the procedural mesh, so might be expensive
+	UFUNCTION(BlueprintCallable)
+	void SetMaterials(UMaterialInterface* NewGlowMaterial, UMaterialInterface* NewQuadMaterial);
+
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
@@ -33,7 +46,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float GlowSize{30.0f};
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector2D QuadSize{100.0f, 100.0f};
 
 	// One-sided or two-sided quad
@@ -54,7 +67,7 @@ public:
 	FVector2D AngleFadeRange{0.001f, 0.1f};
 
 	// Use this to fade the Glow Size depending on the distance between the camera and the center of the quad
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCurveFloat* DistanceFadeCurve;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -67,9 +80,9 @@ public:
 	bool bDrawDebugEdges{false};
 	
 protected:
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	TArray<FVector> QuadPoints;
-
+	
 private:
 	TArray<int32_t> IndexBuffer;
 	TArray<FVector> VertexBuffer;
@@ -81,4 +94,5 @@ private:
 	bool GetCameraLocation(FVector& OutCameraLocation);
 	void Init();
 	void DrawDebugEdges();
+	void UpdateQuadPoints();
 };

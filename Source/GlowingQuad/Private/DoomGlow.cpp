@@ -147,6 +147,38 @@ void ADoomGlow::OnConstruction(const FTransform& Transform)
 	Init();
 }
 
+void ADoomGlow::SetQuadSize(FVector2D NewSize)
+{
+	QuadSize = NewSize;
+	UpdateQuadPoints();
+}
+
+void ADoomGlow::SetQuadPoints(const TArray<FVector>& NewQuadPoints)
+{
+	if (!ensure(NewQuadPoints.Num() == 4))
+	{
+		return;
+	}
+
+	QuadPoints = NewQuadPoints;
+	QuadSize = {0.0f, 0.0f};
+}
+
+void ADoomGlow::SetMaterials(UMaterialInterface* NewGlowMaterial, UMaterialInterface* NewQuadMaterial)
+{
+	if (NewGlowMaterial == GlowMaterial && NewQuadMaterial == QuadMaterial)
+	{
+		return;
+	}
+	
+	GlowMaterial = NewGlowMaterial;
+	QuadMaterial = NewQuadMaterial;
+
+	// We might need to recreate the procedural mesh sections, so just re-init everything
+	// TODO: don't recreate the mesh if the topology didn't change
+	Init();
+}
+
 #if WITH_EDITOR
 void ADoomGlow::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
@@ -187,16 +219,7 @@ bool ADoomGlow::GetCameraLocation(FVector& OutCameraLocation)
 
 void ADoomGlow::Init()
 {
-	if (QuadSize.X > 0 && QuadSize.Y > 0)
-	{
-		// If width or height are zero, someone else will probably take care of it
-		QuadPoints = {
-			{-QuadSize.X / 2, -QuadSize.Y / 2, 0},
-			{ QuadSize.X / 2, -QuadSize.Y / 2, 0},
-			{ QuadSize.X / 2,  QuadSize.Y / 2, 0},
-			{-QuadSize.X / 2,  QuadSize.Y / 2, 0}
-		};
-	}
+	UpdateQuadPoints();
 	
 	if (GlowMaterial == QuadMaterial)
 	{
@@ -255,4 +278,18 @@ void ADoomGlow::DrawDebugEdges()
 		}
 	}
 #endif
+}
+
+void ADoomGlow::UpdateQuadPoints()
+{
+	if (QuadSize.X > 0 && QuadSize.Y > 0)
+	{
+		// If width or height are zero, someone else will probably take care of it
+		QuadPoints = {
+			{-QuadSize.X / 2, -QuadSize.Y / 2, 0},
+			{ QuadSize.X / 2, -QuadSize.Y / 2, 0},
+			{ QuadSize.X / 2,  QuadSize.Y / 2, 0},
+			{-QuadSize.X / 2,  QuadSize.Y / 2, 0}
+		};
+	}
 }
