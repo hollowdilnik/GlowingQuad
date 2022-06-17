@@ -28,12 +28,11 @@ ADoomGlow::ADoomGlow()
 		QuadMaterial = GlowMaterial;
 	}
 	
+	QuadPoints.SetNumZeroed(4);
 	VertexBuffer.SetNumZeroed(16);
 	ColorBuffer.SetNumZeroed(16);
 	QuadVertexBuffer.SetNumZeroed(4);
 	QuadColorBuffer.SetNumZeroed(4);
-
-	Init();
 }
 
 // Called every frame
@@ -141,10 +140,10 @@ void ADoomGlow::Tick(float DeltaTime)
 	DrawDebugEdges();
 }
 
-void ADoomGlow::PostInitProperties()
+void ADoomGlow::OnConstruction(const FTransform& Transform)
 {
-	Super::PostInitProperties();
-
+	Super::OnConstruction(Transform);
+	
 	Init();
 }
 
