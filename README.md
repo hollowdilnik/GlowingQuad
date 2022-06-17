@@ -15,6 +15,7 @@ Tested on UE 4.27.2 with Oculus Quest 2, should work with other engine versions 
 - Use a separate material for the inner quad (and access the UVs)
 - Customize the fade angle range
 - Change the glow size base on the distance from the camera
+- Make the glow size ignore actor's scaling and remain in world space units
 - Draw a debug wireframe
 - Customize the quad shape (ever wanted a glowing trapezoid in your game? I got you!)
 
