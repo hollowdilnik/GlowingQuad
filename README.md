@@ -8,6 +8,8 @@ This is a pretty cheap way to fake bloom for a single quad. Doesn't require `Mob
 
 Tested on UE 4.27.2 with Oculus Quest 2, should work with other engine versions and devices without too much trouble.
 
+Sample project with additional examples: [https://github.com/hollowdilnik/GlowingQuadExamples](https://github.com/hollowdilnik/GlowingQuadExamples)
+
 ### You can:
 - Draw one- and two-sided quads
 - Draw customizable colors
