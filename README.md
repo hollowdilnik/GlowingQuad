@@ -2,7 +2,7 @@
 ![Glow](Resources/glow.jpg)
 Unreal Engine implementation of the fake volumetric glow / flare effect from Doom 3 (FlareDeform).
 
-Following [the original implementation](https://github.com/TTimo/doom3.gpl/blob/master/neo/renderer/tr_deform.cpp#L509) and [an article](http://yzergame.com/doomGlare.html) by Tim Sabo.
+Following [the original implementation](https://github.com/TTimo/doom3.gpl/blob/master/neo/renderer/tr_deform.cpp#L509) and [an article](http://web.archive.org/web/20220629163007/http://yzergame.com/doomGlare.html) by Tim Sabo.
 
 This is a pretty cheap way to fake bloom for a single quad. Doesn't require `MobileHDR`, any post processing or fancy materials. This is done by deforming a procedural mesh each frame, drawn with a simple additive or translucent material. Might come in handy for the retro look, low-end mobile devices or for mobile VR.
 
